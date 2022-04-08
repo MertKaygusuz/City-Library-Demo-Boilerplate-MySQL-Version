@@ -1,0 +1,9 @@
+export enum BookTitleTypes {
+  FICTION,
+  LITERATURE,
+  MATH,
+  SCIENCE,
+  BUSINESS,
+  EDUCATION,
+  RELIGIOUS,
+}
