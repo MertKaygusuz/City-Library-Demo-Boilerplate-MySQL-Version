@@ -17,6 +17,8 @@ import { Role } from './modules/members/entities/role.entity';
 import { Member } from './modules/members/entities/member.entity';
 import { ActiveBookReservation } from './modules/book-reservations/entities/active-book-reservation.entity';
 import { BookReservationHistory } from './modules/book-reservations/entities/book-reservation-history.entity';
+import { MembersModule } from './modules/members/members.module';
+import { BookReservationsModule } from './modules/book-reservations/book-reservations.module';
 
 @Module({
   imports: [
@@ -66,6 +68,8 @@ import { BookReservationHistory } from './modules/book-reservations/entities/boo
       ],
     }),
     BooksModule,
+    MembersModule,
+    BookReservationsModule,
   ],
   controllers: [AppController],
   providers: [

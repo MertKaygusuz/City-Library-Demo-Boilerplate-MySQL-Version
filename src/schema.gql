@@ -2,11 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Role {
-  roleId: Int!
-  roleName: String!
-}
-
 type Book {
   bookId: Int!
   authorName: String!
@@ -24,10 +19,23 @@ type Book {
   coverType: Int!
 }
 
+type Role {
+  roleId: Int!
+  roleName: String!
+}
+
+type TotalAvailableCountsPerTitleEndEditionNumberResponseDto {
+  bookTitle: String!
+  editionNumber: Int!
+  totalAvailableCount: Int!
+}
+
 type Query {
   """this is fake query for custom error exception handling test."""
   customErrorExampleInBookService: Boolean!
   books: [Book!]!
+  getNumberOfBooksPerTitleAndEditionNumber: [TotalAvailableCountsPerTitleEndEditionNumberResponseDto!]!
+  getDistinctBookTitleNumber: Int!
 }
 
 type Mutation {

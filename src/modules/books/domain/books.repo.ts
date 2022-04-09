@@ -15,27 +15,34 @@ export class BooksRepo extends BaseRepository<Book> implements IBooksRepo {
     super(bookRepository);
   }
 
-  // async getDistinctNumberOfField(field: string): Promise<number> {
-  //   const result = await this.bookMongoRepository.distinct(field, {});
-  //   return result.length;
-  // }
+  async getDistinctNumberOfField(field: string): Promise<number> {
+    const bookAlias = 'Books';
+    const result = await this.bookRepository
+      .createQueryBuilder(bookAlias)
+      .select(bookAlias + '.' + field)
+      .distinct(true)
+      .getRawMany(); //getCount does not work
 
-  // async getNumberOfBooksPerTitleAndEditionNumber() {
-  //   const bookTitleKey = '$' + nameof<Book>((x) => x.bookTitle);
-  //   const editionNumberKey = '$' + nameof<Book>((x) => x.editionNumber);
-  //   const availableCountKey = '$' + nameof<Book>((x) => x.availableCount);
-  //   const result = this.bookMongoRepository.aggregate([
-  //     {
-  //       $group: {
-  //         _id: { bookTitle: bookTitleKey, editionNumber: editionNumberKey },
-  //         bookTitle: { $first: bookTitleKey },
-  //         editionNumber: { $first: editionNumberKey },
-  //         totalAvailableCount: { $sum: availableCountKey },
-  //       },
-  //     },
-  //     { $sort: { totalAvailableCount: -1 } },
-  //   ]);
+    return result.length;
+  }
 
-  //   return await result.toArray();
-  // }
+  async getNumberOfBooksPerTitleAndEditionNumber() {
+    const bookAlias = 'Books';
+    const bookTitleName = nameof<Book>((x) => x.bookTitle);
+    const editionNumberName = nameof<Book>((x) => x.editionNumber);
+    const availableCountName = nameof<Book>((x) => x.availableCount);
+    const bookTitleKey = bookAlias + '.' + bookTitleName;
+    const editionNumberKey = bookAlias + '.' + editionNumberName;
+    const availableCountKey = bookAlias + '.' + availableCountName;
+    const result = await this.bookRepository
+      .createQueryBuilder(bookAlias)
+      .select(bookTitleKey, bookTitleName)
+      .addSelect(editionNumberKey, editionNumberName)
+      .addSelect(`SUM(${availableCountKey})`, 'totalAvailableCount')
+      .groupBy(bookTitleKey)
+      .addGroupBy(editionNumberKey)
+      .orderBy('totalAvailableCount', 'DESC')
+      .getRawMany();
+    return result;
+  }
 }

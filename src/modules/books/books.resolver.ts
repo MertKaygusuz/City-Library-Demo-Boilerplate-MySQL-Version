@@ -28,6 +28,16 @@ export class BooksResolver {
     return await this.booksService.findAll();
   }
 
+  @Query(() => [TotalAvailableCountsPerTitleEndEditionNumberResponseDto])
+  getNumberOfBooksPerTitleAndEditionNumber() {
+    return this.booksService.getNumberOfBooksPerTitleAndEditionNumber();
+  }
+
+  @Query(() => Int)
+  async getDistinctBookTitleNumber(): Promise<number> {
+    return await this.booksService.getDistinctBookTitleNumber();
+  }
+
   @Mutation(() => Boolean)
   async updateBook(@Args('updateBookInput') updateBookInput: UpdateBookInput) {
     await this.booksService.update(updateBookInput);

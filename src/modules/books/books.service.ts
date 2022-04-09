@@ -10,7 +10,6 @@ import {
   CustomExceptionBase,
   CustomException,
 } from 'src/core/filters/models/custom-exception';
-import { ObjectID } from 'typeorm';
 
 @Injectable({ scope: Scope.REQUEST })
 export class BooksService {
@@ -54,6 +53,20 @@ export class BooksService {
   async remove(id: number) {
     await this.booksRepo.deleteByIdSoftly(id);
     return true;
+  }
+
+  async getDistinctBookTitleNumber() {
+    return await this.booksRepo.getDistinctNumberOfField(
+      nameof<Book>((x) => x.bookTitle),
+    );
+  }
+
+  async getNumberOfBooksPerTitleAndEditionNumber(): Promise<
+    TotalAvailableCountsPerTitleEndEditionNumberResponseDto[]
+  > {
+    const rawResult =
+      await this.booksRepo.getNumberOfBooksPerTitleAndEditionNumber();
+    return rawResult as TotalAvailableCountsPerTitleEndEditionNumberResponseDto[];
   }
 
   async customErrorExampleInBookService(): Promise<boolean> {
