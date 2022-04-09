@@ -9,6 +9,8 @@ import { Active_Reservations_Repo } from './domain/active-book-reservations.repo
 import { ActiveBookReservation } from './entities/active-book-reservation.entity';
 import { BooksModule } from '../books/books.module';
 import { MembersModule } from '../members/members.module';
+import { ActiveBookReservationsResolver } from './active-book-reservations.resolver';
+import { BookReservationsService } from './book-reservations.service';
 
 @Module({
   imports: [
@@ -26,6 +28,8 @@ import { MembersModule } from '../members/members.module';
       provide: Active_Reservations_Repo,
       useClass: ActiveBookReservationsRepo,
     },
+    ActiveBookReservationsResolver,
+    BookReservationsService,
   ],
   exports: [Book_Reservation_Histories_Repo, Active_Reservations_Repo], //exporting repos for seeding in app controller
 })

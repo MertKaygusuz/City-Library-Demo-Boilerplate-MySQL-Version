@@ -30,12 +30,21 @@ type TotalAvailableCountsPerTitleEndEditionNumberResponseDto {
   totalAvailableCount: Int!
 }
 
+type NumberOfBooksReservedByMembersResponseDto {
+  activeBookReservationsCount: Int!
+  fullName: String!
+  memberName: String!
+  address: String!
+  birthDate: Float!
+}
+
 type Query {
   """this is fake query for custom error exception handling test."""
   customErrorExampleInBookService: Boolean!
   books: [Book!]!
   getNumberOfBooksPerTitleAndEditionNumber: [TotalAvailableCountsPerTitleEndEditionNumberResponseDto!]!
   getDistinctBookTitleNumber: Int!
+  getNumberOfBooksReservedPerMembers: [NumberOfBooksReservedByMembersResponseDto!]!
 }
 
 type Mutation {

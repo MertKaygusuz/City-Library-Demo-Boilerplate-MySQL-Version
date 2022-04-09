@@ -21,7 +21,7 @@ export class BooksRepo extends BaseRepository<Book> implements IBooksRepo {
       .createQueryBuilder(bookAlias)
       .select(bookAlias + '.' + field)
       .distinct(true)
-      .getRawMany(); //getCount does not work
+      .getRawMany(); //getCount does not work properly
 
     return result.length;
   }

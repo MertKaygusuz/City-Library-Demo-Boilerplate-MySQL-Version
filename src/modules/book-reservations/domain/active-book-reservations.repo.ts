@@ -20,37 +20,25 @@ export class ActiveBookReservationsRepo
   }
 
   async getNumberOfBooksReservedPerMembers() {
-    const memberIdKey = '$' + nameof<ActiveBookReservation>((x) => x.memberId);
-    // const result = this.activeBookReservationsMongoRepository.aggregate([
-    //   {
-    //     $group: {
-    //       _id: { memberId: memberIdKey },
-    //       activeBookReservationsCount: { $sum: 1 },
-    //     },
-    //   },
-    //   {
-    //     $lookup: {
-    //       from: 'Members',
-    //       localField: '_id.memberId',
-    //       foreignField: '_id',
-    //       as: 'member_info',
-    //     },
-    //   },
-    //   {
-    //     $unwind: '$member_info',
-    //   },
-    //   {
-    //     $project: {
-    //       _id: 0,
-    //       activeBookReservationsCount: 1,
-    //       [nameof<Member>((x) => x.fullName)]: '$member_info.fullName',
-    //       [nameof<Member>((x) => x.memberName)]: '$member_info.memberName',
-    //       [nameof<Member>((x) => x.address)]: '$member_info.address',
-    //       [nameof<Member>((x) => x.birthDate)]: '$member_info.birthDate',
-    //     },
-    //   },
-    //   { $sort: { [nameof<Member>((x) => x.fullName)]: 1 } },
-    // ]);
-    // return await result.toArray();
+    const fullName = nameof<Member>((x) => x.fullName);
+    const memberName = nameof<Member>((x) => x.memberName);
+    const addressName = nameof<Member>((x) => x.address);
+    const birthDateName = nameof<Member>((x) => x.birthDate);
+    const reservationAlias = 'abr';
+    const memberAlias = 'm';
+    const memberIdKey =
+      reservationAlias + '.' + nameof<ActiveBookReservation>((x) => x.member);
+    const result = await this.activeBookReservationsRepository
+      .createQueryBuilder(reservationAlias)
+      .leftJoinAndSelect(memberIdKey, memberAlias)
+      .select(memberAlias + '.' + fullName, fullName)
+      .addSelect(memberAlias + '.' + memberName, memberName)
+      .addSelect(memberAlias + '.' + addressName, addressName)
+      .addSelect(memberAlias + '.' + birthDateName, birthDateName)
+      .addSelect(`COUNT(*)`, 'activeBookReservationsCount')
+      .groupBy(memberIdKey)
+      .orderBy(fullName)
+      .getRawMany();
+    return result;
   }
 }
