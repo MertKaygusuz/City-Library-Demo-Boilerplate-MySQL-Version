@@ -1,0 +1,73 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Role {
+  roleId: Int!
+  roleName: String!
+}
+
+type Book {
+  bookId: Int!
+  authorName: String!
+  bookTitle: String!
+
+  """Edition date in epoch milliseconds"""
+  firstPublishedDate: Float!
+  editionNumber: Int!
+
+  """Edition date in epoch milliseconds"""
+  editionDate: Float!
+  availableCount: Int!
+  reservedCount: Int!
+  titleType: Int!
+  coverType: Int!
+}
+
+type Query {
+  """this is fake query for custom error exception handling test."""
+  customErrorExampleInBookService: Boolean!
+  books: [Book!]!
+}
+
+type Mutation {
+  """returns registered book id"""
+  createBook(registerBookInput: RegisterBookInput!): Int!
+  updateBook(updateBookInput: UpdateBookInput!): Boolean!
+
+  """Soft delete operation for book records"""
+  removeBook(id: String!): Boolean!
+}
+
+input RegisterBookInput {
+  authorName: String!
+  bookTitle: String!
+
+  """Publish date in epoch milliseconds"""
+  firstPublishDate: Float!
+  editionNumber: Int!
+
+  """Edition date in epoch milliseconds"""
+  editionDate: Float!
+  titleType: Int!
+  coverType: Int!
+  availableCount: Int!
+  reservedCount: Int!
+}
+
+input UpdateBookInput {
+  authorName: String
+  bookTitle: String
+
+  """Publish date in epoch milliseconds"""
+  firstPublishDate: Float
+  editionNumber: Int
+
+  """Edition date in epoch milliseconds"""
+  editionDate: Float
+  titleType: Int
+  coverType: Int
+  availableCount: Int
+  reservedCount: Int
+  id: Int!
+}

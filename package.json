@@ -41,6 +41,7 @@
     "graphql": "^16.3.0",
     "graphql-scalars": "^1.15.0",
     "ioredis": "^4.28.5",
+    "mysql": "^2.18.1",
     "nestjs-i18n": "^8.2.2",
     "node-request-context": "^1.0.5",
     "passport-jwt": "^4.0.0",
