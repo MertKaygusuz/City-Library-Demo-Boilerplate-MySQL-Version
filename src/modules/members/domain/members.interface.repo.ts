@@ -3,4 +3,7 @@ import { Member } from '../entities/member.entity';
 
 export const Member_Repo = 'Members Repository';
 
-export interface IMembersRepo extends IBaseRepository<Member> {}
+export interface IMembersRepo extends IBaseRepository<Member> {
+  getMemberByNameWithRoles(memberName: string): Promise<Member>;
+  getMemberByIdWithRoles(memberId: string): Promise<Member>;
+}

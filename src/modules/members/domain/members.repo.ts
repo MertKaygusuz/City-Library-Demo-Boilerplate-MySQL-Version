@@ -16,4 +16,22 @@ export class MembersRepo
   ) {
     super(memberRepository);
   }
+
+  async getMemberByNameWithRoles(memberName: string): Promise<Member> {
+    const result = await this.memberRepository.findOne({
+      where: { memberName: memberName },
+      relations: ['roles'],
+    });
+
+    return result;
+  }
+
+  async getMemberByIdWithRoles(memberId: string): Promise<Member> {
+    const result = await this.memberRepository.findOne({
+      where: { memberId: memberId },
+      relations: ['roles'],
+    });
+
+    return result;
+  }
 }

@@ -19,6 +19,14 @@ type Book {
   coverType: Int!
 }
 
+type Member {
+  memberName: String!
+  fullName: String!
+  birthDate: Float!
+  address: String!
+  roles: [Role!]!
+}
+
 type Role {
   roleId: Int!
   roleName: String!
@@ -38,12 +46,19 @@ type NumberOfBooksReservedByMembersResponseDto {
   birthDate: Float!
 }
 
+type TokenReponseDto {
+  accessToken: String!
+  refreshToken: String!
+}
+
 type Query {
   """this is fake query for custom error exception handling test."""
   customErrorExampleInBookService: Boolean!
   books: [Book!]!
   getNumberOfBooksPerTitleAndEditionNumber: [TotalAvailableCountsPerTitleEndEditionNumberResponseDto!]!
   getDistinctBookTitleNumber: Int!
+  getMembersByMemberName(memberName: String!): Member!
+  getMembersByMemberId(memberId: String!): Member!
   getNumberOfBooksReservedPerMembers: [NumberOfBooksReservedByMembersResponseDto!]!
 }
 
@@ -54,6 +69,22 @@ type Mutation {
 
   """Soft delete operation for book records"""
   removeBook(id: String!): Boolean!
+
+  """registers new member to system"""
+  register(registrationInput: RegistrationInput!): String!
+
+  """members can update their own info except password and roles."""
+  memberSelfUpdate(memberSelfUpdateInput: SelfUpdateInput!): Boolean!
+
+  """Admin can update any member's info except password and roles."""
+  adminUpdateMember(adminUpdateInput: AdminUpdateInput!): Boolean!
+  login(loginInput: LoginInput!): TokenReponseDto!
+
+  """returns new token if refresh token exists on cache"""
+  refrehLogin(tokenKey: String!): TokenReponseDto!
+
+  """deletes refresh token from cache"""
+  logout(tokenKey: String!): Boolean!
 }
 
 input RegisterBookInput {
@@ -87,4 +118,38 @@ input UpdateBookInput {
   availableCount: Int
   reservedCount: Int
   id: Int!
+}
+
+input RegistrationInput {
+  memberName: String!
+  fullName: String!
+
+  """Birth date in epoch milliseconds"""
+  birthDate: Float!
+  address: String!
+  password: String!
+}
+
+"""contains member update info"""
+input SelfUpdateInput {
+  fullName: String!
+
+  """Birth date in epoch milliseconds"""
+  birthDate: Float!
+  address: String!
+}
+
+"""contains member update info"""
+input AdminUpdateInput {
+  memberName: String!
+  fullName: String!
+
+  """Birth date in epoch milliseconds"""
+  birthDate: Float!
+  address: String!
+}
+
+input LoginInput {
+  memberName: String!
+  password: String!
 }

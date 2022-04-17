@@ -3,4 +3,6 @@ import { Role } from '../entities/role.entity';
 
 export const Role_Repo = 'Roles Repository';
 
-export interface IRolesRepo extends IBaseRepository<Role> {}
+export interface IRolesRepo extends IBaseRepository<Role> {
+  getRolesWithIncludingNames(roleNames: string[]): Promise<Role[]>;
+}

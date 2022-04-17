@@ -19,6 +19,9 @@ import { ActiveBookReservation } from './modules/book-reservations/entities/acti
 import { BookReservationHistory } from './modules/book-reservations/entities/book-reservation-history.entity';
 import { MembersModule } from './modules/members/members.module';
 import { BookReservationsModule } from './modules/book-reservations/book-reservations.module';
+import { RedisModule } from '@liaoliaots/nestjs-redis';
+import { GqlAuthGuard } from './modules/auth/guards/gql-auth.guard';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -48,13 +51,13 @@ import { BookReservationsModule } from './modules/book-reservations/book-reserva
         };
       },
     }),
-    // RedisModule.forRootAsync({
-    //   useFactory: () => ({
-    //     config: {
-    //       url: process.env.REDIS_CONNECTION,
-    //     },
-    //   }),
-    // }),
+    RedisModule.forRootAsync({
+      useFactory: () => ({
+        config: {
+          url: process.env.REDIS_CONNECTION,
+        },
+      }),
+    }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       url: process.env.DB_CONNECTION,
@@ -70,14 +73,15 @@ import { BookReservationsModule } from './modules/book-reservations/book-reserva
     BooksModule,
     MembersModule,
     BookReservationsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: GqlAuthGuard,
-    // },
+    {
+      provide: APP_GUARD,
+      useClass: GqlAuthGuard,
+    },
     {
       provide: APP_FILTER,
       useClass: GlobalExceptionFilter,

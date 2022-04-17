@@ -7,6 +7,8 @@ import { Member_Repo } from './domain/members.interface.repo';
 import { Role } from './entities/role.entity';
 import { Role_Repo } from './domain/roles.interface.repo';
 import { RolesRepo } from './domain/roles.repo';
+import { MembersService } from './members.service';
+import { MembersResolver } from './members.resolver';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Member, Role]), BaseRepository],
@@ -19,7 +21,9 @@ import { RolesRepo } from './domain/roles.repo';
       provide: Role_Repo,
       useClass: RolesRepo,
     },
+    MembersResolver,
+    MembersService,
   ],
-  exports: [Member_Repo, Role_Repo], //exporting repos for seeding in app controller
+  exports: [Member_Repo, Role_Repo, MembersService], //exporting repos for seeding in app controller
 })
 export class MembersModule {}
