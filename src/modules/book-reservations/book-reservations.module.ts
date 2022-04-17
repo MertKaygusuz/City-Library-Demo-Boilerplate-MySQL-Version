@@ -11,6 +11,7 @@ import { BooksModule } from '../books/books.module';
 import { MembersModule } from '../members/members.module';
 import { ActiveBookReservationsResolver } from './active-book-reservations.resolver';
 import { BookReservationsService } from './book-reservations.service';
+import { BookReservationHistoriesResolver } from './book-reservation-histories.resolver';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { BookReservationsService } from './book-reservations.service';
       useClass: ActiveBookReservationsRepo,
     },
     ActiveBookReservationsResolver,
+    BookReservationHistoriesResolver,
     BookReservationsService,
   ],
   exports: [Book_Reservation_Histories_Repo, Active_Reservations_Repo], //exporting repos for seeding in app controller

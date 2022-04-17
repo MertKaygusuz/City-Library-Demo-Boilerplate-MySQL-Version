@@ -38,12 +38,38 @@ type TotalAvailableCountsPerTitleEndEditionNumberResponseDto {
   totalAvailableCount: Int!
 }
 
+type ActiveBookReservationsResponseDto {
+  receivedDate: Float!
+  availableAt: Float!
+  memberId: String!
+  bookId: Int!
+
+  """resolves book field dynamically for active book reservations"""
+  getBookInfo: Book!
+
+  """resolves member field dynamically for active book reservations"""
+  getMemberInfo: Member!
+}
+
 type NumberOfBooksReservedByMembersResponseDto {
   activeBookReservationsCount: Int!
   fullName: String!
   memberName: String!
   address: String!
   birthDate: Float!
+}
+
+type ReservationHistoryResponseDto {
+  receivedDate: Float!
+  returnDate: Float!
+  memberId: String!
+  bookId: Int!
+
+  """resolves book field dynamically for reservation histories"""
+  getBookInfo: Book!
+
+  """resolves member field dynamically for reservation histories"""
+  getMemberInfo: Member!
 }
 
 type TokenReponseDto {
@@ -59,7 +85,24 @@ type Query {
   getDistinctBookTitleNumber: Int!
   getMembersByMemberName(memberName: String!): Member!
   getMembersByMemberId(memberId: String!): Member!
+
+  """
+  returns active book reservations using filter including memberId and bookId.
+  """
+  getAllActiveBookReservations(activeBookReservationsFilterInput: ActiveBookReservationsFilterInput!): [ActiveBookReservationsResponseDto!]!
   getNumberOfBooksReservedPerMembers: [NumberOfBooksReservedByMembersResponseDto!]!
+
+  """
+  returns estimated return dates in epoch ms with respect to given bookId
+  """
+  getReservedBooksEstimatedReturnDates(bookId: Int!): [Float!]!
+  getReservationHistoriesByBookId(bookId: Int!): [ReservationHistoryResponseDto!]!
+  getReservationHistoriesByMemberId(memberId: String!): [ReservationHistoryResponseDto!]!
+}
+
+input ActiveBookReservationsFilterInput {
+  memberId: String
+  bookId: Int
 }
 
 type Mutation {
@@ -67,8 +110,11 @@ type Mutation {
   createBook(registerBookInput: RegisterBookInput!): Int!
   updateBook(updateBookInput: UpdateBookInput!): Boolean!
 
+  """Check with book id if there is available book"""
+  checkIfAnyAvailableBooks(id: Int!): Boolean!
+
   """Soft delete operation for book records"""
-  removeBook(id: String!): Boolean!
+  removeBook(id: Int!): Boolean!
 
   """registers new member to system"""
   register(registrationInput: RegistrationInput!): String!
@@ -78,6 +124,8 @@ type Mutation {
 
   """Admin can update any member's info except password and roles."""
   adminUpdateMember(adminUpdateInput: AdminUpdateInput!): Boolean!
+  assignBookToMember(assigningBookInput: AssigningBookInput!): Boolean!
+  unAssignBookToMember(assigningBookInput: AssigningBookInput!): Boolean!
   login(loginInput: LoginInput!): TokenReponseDto!
 
   """returns new token if refresh token exists on cache"""
@@ -147,6 +195,11 @@ input AdminUpdateInput {
   """Birth date in epoch milliseconds"""
   birthDate: Float!
   address: String!
+}
+
+input AssigningBookInput {
+  bookId: Int!
+  memberId: String!
 }
 
 input LoginInput {

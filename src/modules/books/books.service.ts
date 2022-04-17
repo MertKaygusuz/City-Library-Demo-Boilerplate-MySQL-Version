@@ -39,7 +39,32 @@ export class BooksService {
     });
   }
 
-  async getBookById(id: string): Promise<Book> {
+  async updateForReservation(bookId: number) {
+    const theBook = await this.booksRepo.findOne({
+      bookId: bookId,
+      isDeleted: false,
+    });
+    if (!theBook) await this.throwBookNotFoundError();
+    if (theBook.availableCount < 1) await this.throwBookNotAvailableError();
+    await this.booksRepo.updateById(bookId, {
+      availableCount: theBook.availableCount - 1,
+      reservedCount: theBook.reservedCount + 1,
+    });
+  }
+
+  async updateForDispose(bookId: number) {
+    const theBook = await this.booksRepo.findOne({
+      bookId: bookId,
+      isDeleted: false,
+    });
+    if (!theBook) throw await this.throwBookNotFoundError();
+    await this.booksRepo.updateById(bookId, {
+      availableCount: theBook.availableCount + 1,
+      reservedCount: theBook.reservedCount - 1,
+    });
+  }
+
+  async getBookById(id: number): Promise<Book> {
     return await this.booksRepo.findOneById(id);
   }
 
@@ -59,6 +84,17 @@ export class BooksService {
     return await this.booksRepo.getDistinctNumberOfField(
       nameof<Book>((x) => x.bookTitle),
     );
+  }
+
+  async checkIfAnyAvailableBooks(bookId: number): Promise<boolean> {
+    const book = await this.booksRepo.findWithOptions({
+      where: { bookId: bookId },
+      select: ['availableCount'],
+    });
+
+    if (!book || !book[0]) return false;
+
+    return book[0].availableCount > 0;
   }
 
   async getNumberOfBooksPerTitleAndEditionNumber(): Promise<

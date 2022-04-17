@@ -4,8 +4,10 @@ import { Book } from './entities/book.entity';
 import { UpdateBookInput } from './dto/update-book.input';
 import { RegisterBookInput } from './dto/register-book.input';
 import { TotalAvailableCountsPerTitleEndEditionNumberResponseDto } from './dto/total-available-counts-per-title-end-edition-number.response.dto';
+import { AuthRolesGuard } from '../auth/guards/auth-roles.guard';
 
 @Resolver(() => Book)
+@AuthRolesGuard('Admin')
 export class BooksResolver {
   constructor(private readonly booksService: BooksService) {}
 
@@ -45,10 +47,17 @@ export class BooksResolver {
   }
 
   @Mutation(() => Boolean, {
+    description: 'Check with book id if there is available book',
+  })
+  async checkIfAnyAvailableBooks(@Args('id', { type: () => Int }) id: number) {
+    return await this.booksService.checkIfAnyAvailableBooks(id);
+  }
+
+  @Mutation(() => Boolean, {
     description: 'Soft delete operation for book records',
   })
   async removeBook(
-    @Args('id', { type: () => String }) id: number,
+    @Args('id', { type: () => Int }) id: number,
   ): Promise<boolean> {
     return await this.booksService.remove(id);
   }
