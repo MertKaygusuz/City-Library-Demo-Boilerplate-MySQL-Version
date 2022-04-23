@@ -256,11 +256,11 @@ export class AppService {
 
   async deleteAllData() {
     await Promise.all([
-      this.membersRepo.delete({}),
-      this.rolesRepo.delete({}),
-      this.booksRepo.delete({}),
       this.activeBookReservationsRepo.delete({}),
       this.bookReservationsHistoriesRepo.delete({}),
+      this.rolesRepo.delete({}),
     ]);
+
+    await Promise.all([this.membersRepo.delete({}), this.booksRepo.delete({})]);
   }
 }
