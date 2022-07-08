@@ -12,6 +12,10 @@ Create .env file in root directory. (There is an example file in root directory.
 $ npm install
 ```
 
+## Db Synchronization
+
+You can use synchronize option as true for first run. (change "synchronize: true" in app.module.ts line 64)
+
 ## Running The App
 
 ```bash
